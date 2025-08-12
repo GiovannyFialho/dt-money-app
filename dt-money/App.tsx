@@ -1,7 +1,7 @@
 import "@/styles/global.css";
 
-import { Login } from "@/screens/login";
+import { NavigationRoutes } from "@/routes";
 
 export default function App() {
-  return <Login />;
+  return <NavigationRoutes />;
 }
