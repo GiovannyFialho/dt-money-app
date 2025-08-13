@@ -1,16 +1,21 @@
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 
 import { PublicStackParamsList } from "@/routes/public-routes";
+import { TextInput } from "react-native-gesture-handler";
+
+import { DismissKeyboardView } from "@/components/dismiss-keyboard-view";
 
 export function Login() {
   const navigation =
     useNavigation<StackNavigationProp<PublicStackParamsList>>();
 
   return (
-    <View className="flex-1 items-center justify-center">
+    <DismissKeyboardView>
       <Text>Tela de login!</Text>
+
+      <TextInput className="h-10 w-full bg-gray-500" />
 
       <TouchableOpacity
         className="mt-5"
@@ -18,6 +23,6 @@ export function Login() {
       >
         <Text>Regitrar</Text>
       </TouchableOpacity>
-    </View>
+    </DismissKeyboardView>
   );
 }
