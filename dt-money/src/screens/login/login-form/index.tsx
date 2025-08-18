@@ -19,8 +19,18 @@ export function LoginForm() {
       <AppInput
         control={control}
         name="email"
-        lable="E-mail"
-        placeholder="email@exemple.com"
+        lable="EMAIL"
+        placeholder="mail@example.br"
+        leftIconName="mail-outline"
+      />
+
+      <AppInput
+        control={control}
+        name="password"
+        lable="SENHA"
+        placeholder="Sua senha"
+        leftIconName="mail-outline"
+        secureTextEntry
       />
     </>
   );
