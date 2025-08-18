@@ -29,7 +29,7 @@ export function LoginForm() {
         name="password"
         lable="SENHA"
         placeholder="Sua senha"
-        leftIconName="mail-outline"
+        leftIconName="lock-outline"
         secureTextEntry
       />
     </>
