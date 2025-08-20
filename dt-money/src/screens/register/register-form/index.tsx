@@ -7,22 +7,32 @@ import { type PublicStackParamsList } from "@/routes/public-routes";
 import { AppButton } from "@/components/app-button";
 import { AppInput } from "@/components/app-input";
 
-export interface LoginFormParams {
+export interface RegisterFormParams {
   email: string;
+  name: string;
   password: string;
+  confirmPassword: string;
 }
 
-export function LoginForm() {
+export function RegisterForm() {
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
 
   const {
     control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<LoginFormParams>();
+  } = useForm<RegisterFormParams>();
 
   return (
     <View className="flex-1">
+      <AppInput
+        control={control}
+        name="name"
+        lable="NOME"
+        placeholder="Seu nome"
+        leftIconName="person"
+      />
+
       <AppInput
         control={control}
         name="email"
@@ -40,20 +50,29 @@ export function LoginForm() {
         secureTextEntry
       />
 
+      <AppInput
+        control={control}
+        name="confirmPassword"
+        lable="SENHA"
+        placeholder="Confirme sua senha"
+        leftIconName="lock-outline"
+        secureTextEntry
+      />
+
       <View className="mb-6 mt-8 min-h-[250px] flex-1 justify-between">
-        <AppButton iconName="arrow-forward">Login</AppButton>
+        <AppButton iconName="arrow-forward">Cadastrar</AppButton>
 
         <View>
           <Text className="mb-6 text-base text-gray-300">
-            Ainda não possui uma conta?
+            Já possui uma conta?
           </Text>
 
           <AppButton
             iconName="arrow-forward"
             mode="outline"
-            onPress={() => navigation.navigate("register")}
+            onPress={() => navigation.navigate("login")}
           >
-            Cadastrar
+            Acessar
           </AppButton>
         </View>
       </View>

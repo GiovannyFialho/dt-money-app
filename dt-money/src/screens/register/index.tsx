@@ -1,20 +1,18 @@
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { Text, TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 
-import { PublicStackParamsList } from "@/routes/public-routes";
+import { AuthHeader } from "@/components/auth-header";
+import { DismissKeyboardView } from "@/components/dismiss-keyboard-view";
+
+import { RegisterForm } from "@/screens/register/register-form";
 
 export function Register() {
-  const navigation =
-    useNavigation<StackNavigationProp<PublicStackParamsList>>();
-
   return (
-    <View className="flex-1 items-center justify-center">
-      <Text>Tela de registro!</Text>
+    <DismissKeyboardView>
+      <View className="w-[82%] flex-1 self-center">
+        <AuthHeader />
 
-      <TouchableOpacity className="mt-5" onPress={() => navigation.goBack()}>
-        <Text>Voltar</Text>
-      </TouchableOpacity>
-    </View>
+        <RegisterForm />
+      </View>
+    </DismissKeyboardView>
   );
 }

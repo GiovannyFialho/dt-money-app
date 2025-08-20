@@ -10,6 +10,7 @@ export function Login() {
     <DismissKeyboardView>
       <View className="w-[82%] flex-1 self-center">
         <AuthHeader />
+
         <LoginForm />
       </View>
     </DismissKeyboardView>
