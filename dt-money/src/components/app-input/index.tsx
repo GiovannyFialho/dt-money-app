@@ -12,6 +12,8 @@ import {
 
 import { colors } from "@/shared/colors";
 
+import { ErrorMessage } from "@/components/error-message";
+
 type AppInputParams<T extends FieldValues> = TextInputProps & {
   control: Control<T>;
   name: Path<T>;
@@ -87,9 +89,7 @@ export function AppInput<T extends FieldValues>({
             )}
           </TouchableOpacity>
 
-          {error?.message && (
-            <Text className="mt-2 text-sm text-red-500">{error.message}</Text>
-          )}
+          {error?.message && <ErrorMessage>{error.message}</ErrorMessage>}
         </View>
       )}
     />
