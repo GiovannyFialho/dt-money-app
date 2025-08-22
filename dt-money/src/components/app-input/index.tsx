@@ -41,7 +41,7 @@ export function AppInput<T extends FieldValues>({
     <Controller
       control={control}
       name={name}
-      render={({ field: { onChange, value } }) => (
+      render={({ field: { onChange, value }, fieldState: { error } }) => (
         <View className="mt-4 w-full">
           {lable && (
             <Text
@@ -86,6 +86,10 @@ export function AppInput<T extends FieldValues>({
               </TouchableOpacity>
             )}
           </TouchableOpacity>
+
+          {error?.message && (
+            <Text className="mt-2 text-sm text-red-500">{error.message}</Text>
+          )}
         </View>
       )}
     />

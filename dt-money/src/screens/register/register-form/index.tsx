@@ -1,27 +1,53 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { type NavigationProp, useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 import { Text, View } from "react-native";
+import z from "zod";
 
 import { type PublicStackParamsList } from "@/routes/public-routes";
 
 import { AppButton } from "@/components/app-button";
 import { AppInput } from "@/components/app-input";
 
-export interface RegisterFormParams {
-  email: string;
-  name: string;
-  password: string;
-  confirmPassword: string;
-}
+const registerFormSchema = z
+  .object({
+    name: z.string().min(3, "Campo obrigatório"),
+    email: z.email("E-mail inválido"),
+    password: z.string().min(6, "A senha deve ter no mínimo 6 caracteres"),
+    confirmPassword: z
+      .string()
+      .min(6, "A senha deve ter no mínimo 6 caracteres"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    error: "As senhas devem ser iguais",
+    path: ["confirmPassword"],
+  });
+
+type RegisterFormParams = z.infer<typeof registerFormSchema>;
 
 export function RegisterForm() {
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
 
   const {
     control,
+    reset,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<RegisterFormParams>();
+  } = useForm<RegisterFormParams>({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    resolver: zodResolver(registerFormSchema),
+  });
+
+  async function handleRegisterSubmit(data: RegisterFormParams) {
+    console.log({ registerData: data });
+
+    reset();
+  }
 
   return (
     <View className="flex-1">
@@ -60,7 +86,12 @@ export function RegisterForm() {
       />
 
       <View className="mb-6 mt-8 min-h-[250px] flex-1 justify-between">
-        <AppButton iconName="arrow-forward">Cadastrar</AppButton>
+        <AppButton
+          iconName="arrow-forward"
+          onPress={handleSubmit(handleRegisterSubmit)}
+        >
+          Cadastrar
+        </AppButton>
 
         <View>
           <Text className="mb-6 text-base text-gray-300">
