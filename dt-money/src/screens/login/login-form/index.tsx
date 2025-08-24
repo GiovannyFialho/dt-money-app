@@ -14,7 +14,7 @@ const loginFormSchema = z.object({
   password: z.string().min(6, "A senha deve ter no mínimo 6 caracteres"),
 });
 
-type LoginFormParams = z.infer<typeof loginFormSchema>;
+export type LoginFormParams = z.infer<typeof loginFormSchema>;
 
 export function LoginForm() {
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();

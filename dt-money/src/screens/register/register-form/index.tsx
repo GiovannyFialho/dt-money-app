@@ -23,7 +23,7 @@ const registerFormSchema = z
     path: ["confirmPassword"],
   });
 
-type RegisterFormParams = z.infer<typeof registerFormSchema>;
+export type RegisterFormParams = z.infer<typeof registerFormSchema>;
 
 export function RegisterForm() {
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
