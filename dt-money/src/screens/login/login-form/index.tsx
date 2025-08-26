@@ -4,10 +4,13 @@ import { useForm } from "react-hook-form";
 import { Text, View } from "react-native";
 import z from "zod";
 
+import { useAuthContext } from "@/context/auth.context";
+
 import { type PublicStackParamsList } from "@/routes/public-routes";
 
 import { AppButton } from "@/components/app-button";
 import { AppInput } from "@/components/app-input";
+import { AxiosError } from "axios";
 
 const loginFormSchema = z.object({
   email: z.email("E-mail inválido"),
@@ -17,6 +20,8 @@ const loginFormSchema = z.object({
 export type LoginFormParams = z.infer<typeof loginFormSchema>;
 
 export function LoginForm() {
+  const { handleAuthenticate } = useAuthContext();
+
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
 
   const {
@@ -32,10 +37,16 @@ export function LoginForm() {
     resolver: zodResolver(loginFormSchema),
   });
 
-  async function handleLoginSubmit(data: LoginFormParams) {
-    console.log({ loginData: data });
+  async function handleLoginSubmit(userData: LoginFormParams) {
+    try {
+      await handleAuthenticate(userData);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response?.data);
+      }
 
-    reset();
+      console.log(`Error: ${error}`);
+    }
   }
 
   return (
