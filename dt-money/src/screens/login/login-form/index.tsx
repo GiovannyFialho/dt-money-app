@@ -44,8 +44,6 @@ export function LoginForm() {
       if (error instanceof AxiosError) {
         console.log(error.response?.data);
       }
-
-      console.log(`Error: ${error}`);
     }
   }
 
@@ -53,10 +51,12 @@ export function LoginForm() {
     <View className="flex-1">
       <AppInput
         control={control}
+        keyboardType="email-address"
         name="email"
         lable="EMAIL"
         placeholder="mail@example.br"
         leftIconName="mail-outline"
+        autoCapitalize="none"
       />
 
       <AppInput

@@ -61,10 +61,12 @@ export function RegisterForm() {
 
       <AppInput
         control={control}
+        keyboardType="email-address"
         name="email"
         lable="EMAIL"
         placeholder="mail@example.br"
         leftIconName="mail-outline"
+        autoCapitalize="none"
       />
 
       <AppInput
