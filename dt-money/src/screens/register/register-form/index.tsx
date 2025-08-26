@@ -6,8 +6,11 @@ import z from "zod";
 
 import { type PublicStackParamsList } from "@/routes/public-routes";
 
+import { useAuthContext } from "@/context/auth.context";
+
 import { AppButton } from "@/components/app-button";
 import { AppInput } from "@/components/app-input";
+import { AxiosError } from "axios";
 
 const registerFormSchema = z
   .object({
@@ -26,6 +29,8 @@ const registerFormSchema = z
 export type RegisterFormParams = z.infer<typeof registerFormSchema>;
 
 export function RegisterForm() {
+  const { handleRegister } = useAuthContext();
+
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
 
   const {
@@ -43,10 +48,14 @@ export function RegisterForm() {
     resolver: zodResolver(registerFormSchema),
   });
 
-  async function handleRegisterSubmit(data: RegisterFormParams) {
-    console.log({ registerData: data });
-
-    reset();
+  async function handleRegisterSubmit(userData: RegisterFormParams) {
+    try {
+      await handleRegister(userData);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response?.data);
+      }
+    }
   }
 
   return (
