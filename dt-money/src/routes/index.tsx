@@ -8,10 +8,10 @@ import { PrivateRoutes } from "@/routes/private-routes";
 import { PublicRoutes } from "@/routes/public-routes";
 
 export function NavigationRoutes() {
-  const { user } = useAuthContext();
+  const { user, token } = useAuthContext();
 
   const Routes = useCallback(() => {
-    if (!user) {
+    if (!user || !token) {
       return <PublicRoutes />;
     } else {
       return <PrivateRoutes />;
