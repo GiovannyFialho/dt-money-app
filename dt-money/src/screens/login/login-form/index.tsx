@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type NavigationProp, useNavigation } from "@react-navigation/native";
+import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { Text, View } from "react-native";
 import z from "zod";
@@ -8,9 +9,10 @@ import { useAuthContext } from "@/context/auth.context";
 
 import { type PublicStackParamsList } from "@/routes/public-routes";
 
+import { AppError } from "@/shared/helpers/app-error";
+
 import { AppButton } from "@/components/app-button";
 import { AppInput } from "@/components/app-input";
-import { AxiosError } from "axios";
 
 const loginFormSchema = z.object({
   email: z.email("E-mail inválido"),
@@ -41,6 +43,8 @@ export function LoginForm() {
     try {
       await handleAuthenticate(userData);
     } catch (error) {
+      console.log(error instanceof AppError);
+
       if (error instanceof AxiosError) {
         console.log(error.response?.data);
       }
