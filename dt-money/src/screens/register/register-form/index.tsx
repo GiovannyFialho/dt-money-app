@@ -6,11 +6,12 @@ import z from "zod";
 
 import { type PublicStackParamsList } from "@/routes/public-routes";
 
+import { useErrorHandler } from "@/hooks/useErrorHandler";
+
 import { useAuthContext } from "@/context/auth.context";
 
 import { AppButton } from "@/components/app-button";
 import { AppInput } from "@/components/app-input";
-import { AxiosError } from "axios";
 
 const registerFormSchema = z
   .object({
@@ -30,6 +31,8 @@ export type RegisterFormParams = z.infer<typeof registerFormSchema>;
 
 export function RegisterForm() {
   const { handleRegister } = useAuthContext();
+
+  const { handleError } = useErrorHandler();
 
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
 
@@ -51,9 +54,7 @@ export function RegisterForm() {
     try {
       await handleRegister(userData);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error.response?.data);
-      }
+      handleError(error, "Falha ao cadastrar usuário");
     }
   }
 

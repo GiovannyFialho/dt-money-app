@@ -1,13 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type NavigationProp, useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
-import { Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import z from "zod";
 
-import { useAuthContext } from "@/context/auth.context";
-import { useSnackbarContext } from "@/context/snackbar.context";
+import { colors } from "@/shared/colors";
 
-import { AppError } from "@/shared/helpers/app-error";
+import { useAuthContext } from "@/context/auth.context";
+
+import { useErrorHandler } from "@/hooks/useErrorHandler";
 
 import { type PublicStackParamsList } from "@/routes/public-routes";
 
@@ -22,8 +23,9 @@ const loginFormSchema = z.object({
 export type LoginFormParams = z.infer<typeof loginFormSchema>;
 
 export function LoginForm() {
-  const { notify } = useSnackbarContext();
   const { handleAuthenticate } = useAuthContext();
+
+  const { handleError } = useErrorHandler();
 
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
 
@@ -43,12 +45,7 @@ export function LoginForm() {
     try {
       await handleAuthenticate(userData);
     } catch (error) {
-      if (error instanceof AppError) {
-        notify({
-          message: error.message,
-          type: "ERROR",
-        });
-      }
+      handleError(error, "Falha ao fazer o login");
     }
   }
 
@@ -75,10 +72,10 @@ export function LoginForm() {
 
       <View className="mb-6 mt-8 min-h-[250px] flex-1 justify-between">
         <AppButton
-          iconName="arrow-forward"
+          iconName={isSubmitting ? undefined : "arrow-forward"}
           onPress={handleSubmit(handleLoginSubmit)}
         >
-          Login
+          {isSubmitting ? <ActivityIndicator color={colors.white} /> : "Login"}
         </AppButton>
 
         <View>
