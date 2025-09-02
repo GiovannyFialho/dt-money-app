@@ -35,7 +35,6 @@ export function RegisterForm() {
 
   const {
     control,
-    reset,
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<RegisterFormParams>({

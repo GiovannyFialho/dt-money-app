@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 type SnackbarMessageType = "ERROR" | "SUCCESS";
 
@@ -40,4 +40,10 @@ export function SnackbarContextProvider({
       {children}
     </SnackbarContext.Provider>
   );
+}
+
+export function useSnackbarContext() {
+  const context = useContext(SnackbarContext);
+
+  return context;
 }

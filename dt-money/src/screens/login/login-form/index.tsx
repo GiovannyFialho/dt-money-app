@@ -6,10 +6,9 @@ import { Text, View } from "react-native";
 import z from "zod";
 
 import { useAuthContext } from "@/context/auth.context";
+import { useSnackbarContext } from "@/context/snackbar.context";
 
 import { type PublicStackParamsList } from "@/routes/public-routes";
-
-import { AppError } from "@/shared/helpers/app-error";
 
 import { AppButton } from "@/components/app-button";
 import { AppInput } from "@/components/app-input";
@@ -22,6 +21,7 @@ const loginFormSchema = z.object({
 export type LoginFormParams = z.infer<typeof loginFormSchema>;
 
 export function LoginForm() {
+  const { notify } = useSnackbarContext();
   const { handleAuthenticate } = useAuthContext();
 
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
@@ -29,7 +29,6 @@ export function LoginForm() {
   const {
     control,
     handleSubmit,
-    reset,
     formState: { isSubmitting },
   } = useForm<LoginFormParams>({
     defaultValues: {
@@ -43,10 +42,11 @@ export function LoginForm() {
     try {
       await handleAuthenticate(userData);
     } catch (error) {
-      console.log(error instanceof AppError);
-
       if (error instanceof AxiosError) {
-        console.log(error.response?.data);
+        notify({
+          message: error.message,
+          type: "ERROR",
+        });
       }
     }
   }
