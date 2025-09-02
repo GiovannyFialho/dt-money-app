@@ -1,12 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type NavigationProp, useNavigation } from "@react-navigation/native";
-import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { Text, View } from "react-native";
 import z from "zod";
 
 import { useAuthContext } from "@/context/auth.context";
 import { useSnackbarContext } from "@/context/snackbar.context";
+
+import { AppError } from "@/shared/helpers/app-error";
 
 import { type PublicStackParamsList } from "@/routes/public-routes";
 
@@ -42,7 +43,7 @@ export function LoginForm() {
     try {
       await handleAuthenticate(userData);
     } catch (error) {
-      if (error instanceof AxiosError) {
+      if (error instanceof AppError) {
         notify({
           message: error.message,
           type: "ERROR",
