@@ -6,6 +6,8 @@ import { useBottomSheetContext } from "@/context/bottom-sheet.context";
 
 import { colors } from "@/shared/colors";
 
+import { NewTransaction } from "@/components/new-transaction";
+
 export function AppHeader() {
   const { handleLogout } = useAuthContext();
   const { openBottomSheet } = useBottomSheetContext();
@@ -31,7 +33,7 @@ export function AppHeader() {
       <TouchableOpacity
         className="h-[50px] w-[130px] items-center justify-center rounded-xl bg-accent-brand"
         onPress={() => {
-          openBottomSheet(<Text>Formulário da nova transação</Text>, 2);
+          openBottomSheet(<NewTransaction />, 2);
         }}
       >
         <Text className="text-sm font-bold text-white">Nova transação</Text>
