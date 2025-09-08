@@ -3,7 +3,7 @@ import axios from "axios";
 import { AppError } from "@/shared/helpers/app-error";
 
 export const dtMoneyApi = axios.create({
-  baseURL: "http://192.168.68.104:3001",
+  baseURL: "http://192.168.68.106:3001",
 });
 
 dtMoneyApi.interceptors.response.use(
