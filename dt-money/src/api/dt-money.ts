@@ -1,10 +1,13 @@
 import axios from "axios";
 
 import { AppError } from "@/shared/helpers/app-error";
+import { addTokenToRequest } from "@/shared/helpers/axios.helper";
 
 export const dtMoneyApi = axios.create({
-  baseURL: "http://192.168.68.106:3001",
+  baseURL: "http://192.168.68.101:3001",
 });
+
+addTokenToRequest(dtMoneyApi);
 
 dtMoneyApi.interceptors.response.use(
   (config) => config,
