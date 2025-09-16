@@ -10,6 +10,7 @@ import { colors } from "@/shared/colors";
 import { CreateTransactionInterface } from "@/shared/interfaces/https/create-transaction-request";
 
 import { AppButton } from "@/components/app-button";
+import { ErrorMessage } from "@/components/error-message";
 import { SelectCategoryModal } from "@/components/select-category-modal";
 import { SelectType } from "@/components/select-type";
 
@@ -45,8 +46,6 @@ export function NewTransaction() {
   });
   const [validationErrors, setValidationErrors] =
     useState<ValidationErrorsTypes>();
-
-  console.log({ validationErrors });
 
   async function handleCreateTransaction() {
     const result = transactionSchema.safeParse(transaction);
@@ -90,6 +89,10 @@ export function NewTransaction() {
           className="my-2 h-[50px] rounded-md bg-background-primary pl-4 text-lg text-white"
         />
 
+        {validationErrors?.description && (
+          <ErrorMessage>{validationErrors.description}</ErrorMessage>
+        )}
+
         <CurrencyInput
           value={transaction.value}
           prefix="R$ "
@@ -101,6 +104,10 @@ export function NewTransaction() {
           className="my-2 h-[50px] rounded-md bg-background-primary pl-4 text-lg text-white"
         />
 
+        {validationErrors?.value && (
+          <ErrorMessage>{validationErrors.value}</ErrorMessage>
+        )}
+
         <SelectCategoryModal
           selectedCategory={transaction.categoryId}
           onSelect={(categoryId) =>
@@ -108,10 +115,18 @@ export function NewTransaction() {
           }
         />
 
+        {validationErrors?.categoryId && (
+          <ErrorMessage>{validationErrors.categoryId}</ErrorMessage>
+        )}
+
         <SelectType
           typeId={transaction.typeId}
           setTransactionType={(typeId) => setTransactionData("typeId", typeId)}
         />
+
+        {validationErrors?.typeId && (
+          <ErrorMessage>{validationErrors.typeId}</ErrorMessage>
+        )}
 
         <View className="my-4">
           <AppButton onPress={handleCreateTransaction}>Registrar</AppButton>

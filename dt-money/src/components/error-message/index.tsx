@@ -1,8 +1,8 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import { ReactNode } from "react";
 import { Text, View } from "react-native";
 
 import { colors } from "@/shared/colors";
-import { ReactNode } from "react";
 
 type ErrorMessageProps = {
   children: ReactNode;
@@ -17,6 +17,7 @@ export function ErrorMessage({ children }: ErrorMessageProps) {
         color={colors["accent-red-background-primary"]}
         className="mr-1"
       />
+
       <Text className="text-accent-red-background-primary">{children}</Text>
     </View>
   );
