@@ -2,14 +2,25 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import CurrencyInput from "react-native-currency-input";
+import z from "zod";
 
 import { useBottomSheetContext } from "@/context/bottom-sheet.context";
 
 import { colors } from "@/shared/colors";
 import { CreateTransactionInterface } from "@/shared/interfaces/https/create-transaction-request";
 
+import { AppButton } from "@/components/app-button";
 import { SelectCategoryModal } from "@/components/select-category-modal";
 import { SelectType } from "@/components/select-type";
+
+const transactionSchema = z.object({
+  description: z.string().min(4, "Descrição é obrigatória"),
+  value: z.number().min(0.01, "Deve ser no mínimo 0,01"),
+  typeId: z.number().min(1, "Selecione um tipo de transação"),
+  categoryId: z.number().min(1, "Selecione uma categoria de transação"),
+});
+
+type ValidationErrorsTypes = Record<keyof CreateTransactionInterface, string>;
 
 export function NewTransaction() {
   const { closeBottomSheet } = useBottomSheetContext();
@@ -20,6 +31,26 @@ export function NewTransaction() {
     categoryId: null,
     value: 0,
   });
+  const [validationErrors, setValidationErrors] =
+    useState<ValidationErrorsTypes>();
+
+  console.log({ validationErrors });
+
+  async function handleCreateTransaction() {
+    const result = transactionSchema.safeParse(transaction);
+
+    if (!result.success) {
+      const errors: ValidationErrorsTypes = {} as ValidationErrorsTypes;
+      result.error.issues.forEach((err) => {
+        const field = err.path[0] as keyof CreateTransactionInterface;
+        errors[field] = err.message;
+      });
+
+      setValidationErrors(errors);
+
+      return;
+    }
+  }
 
   function setTransactionData(
     key: keyof CreateTransactionInterface,
@@ -69,6 +100,10 @@ export function NewTransaction() {
           typeId={transaction.typeId}
           setTransactionType={(typeId) => setTransactionData("typeId", typeId)}
         />
+
+        <View className="my-4">
+          <AppButton onPress={handleCreateTransaction}>Registrar</AppButton>
+        </View>
       </View>
     </View>
   );
