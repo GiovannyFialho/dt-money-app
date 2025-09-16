@@ -16,8 +16,20 @@ import { SelectType } from "@/components/select-type";
 const transactionSchema = z.object({
   description: z.string().min(4, "Descrição é obrigatória"),
   value: z.number().min(0.01, "Deve ser no mínimo 0,01"),
-  typeId: z.number().min(1, "Selecione um tipo de transação"),
-  categoryId: z.number().min(1, "Selecione uma categoria de transação"),
+  typeId: z
+    .number()
+    .min(1, "Selecione um tipo de transação")
+    .nullable()
+    .refine((val) => val !== null, {
+      message: "Selecione um tipo de transação",
+    }),
+  categoryId: z
+    .number()
+    .min(1, "Selecione uma categoria de transação")
+    .nullable()
+    .refine((val) => val !== null, {
+      message: "Selecione uma categoria de transação",
+    }),
 });
 
 type ValidationErrorsTypes = Record<keyof CreateTransactionInterface, string>;
