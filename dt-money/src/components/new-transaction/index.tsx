@@ -1,10 +1,19 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import CurrencyInput from "react-native-currency-input";
 import z from "zod";
 
 import { useBottomSheetContext } from "@/context/bottom-sheet.context";
+import { useTransactionContext } from "@/context/transaction.context";
+
+import { useErrorHandler } from "@/hooks/useErrorHandler";
 
 import { colors } from "@/shared/colors";
 import { CreateTransactionInterface } from "@/shared/interfaces/https/create-transaction-request";
@@ -37,7 +46,10 @@ type ValidationErrorsTypes = Record<keyof CreateTransactionInterface, string>;
 
 export function NewTransaction() {
   const { closeBottomSheet } = useBottomSheetContext();
+  const { createTransaction } = useTransactionContext();
+  const { handleError } = useErrorHandler();
 
+  const [loading, setLoading] = useState(false);
   const [transaction, setTransaction] = useState<CreateTransactionInterface>({
     description: "",
     typeId: null,
@@ -48,18 +60,29 @@ export function NewTransaction() {
     useState<ValidationErrorsTypes>();
 
   async function handleCreateTransaction() {
-    const result = transactionSchema.safeParse(transaction);
+    try {
+      setLoading(true);
 
-    if (!result.success) {
-      const errors: ValidationErrorsTypes = {} as ValidationErrorsTypes;
-      result.error.issues.forEach((err) => {
-        const field = err.path[0] as keyof CreateTransactionInterface;
-        errors[field] = err.message;
-      });
+      const result = transactionSchema.safeParse(transaction);
 
-      setValidationErrors(errors);
+      if (!result.success) {
+        const errors: ValidationErrorsTypes = {} as ValidationErrorsTypes;
 
-      return;
+        result.error.issues.forEach((err) => {
+          const field = err.path[0] as keyof CreateTransactionInterface;
+          errors[field] = err.message;
+        });
+
+        setValidationErrors(errors);
+        return;
+      }
+
+      await createTransaction(transaction);
+      closeBottomSheet();
+    } catch (error) {
+      handleError(error, "Falha ao criar transação");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -129,7 +152,9 @@ export function NewTransaction() {
         )}
 
         <View className="my-4">
-          <AppButton onPress={handleCreateTransaction}>Registrar</AppButton>
+          <AppButton onPress={handleCreateTransaction}>
+            {loading ? <ActivityIndicator color={colors.white} /> : "Registrar"}
+          </AppButton>
         </View>
       </View>
     </View>

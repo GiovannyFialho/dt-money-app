@@ -1,11 +1,13 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
+import type { CreateTransactionInterface } from "@/shared/interfaces/https/create-transaction-request";
 import type { TransactionCategory } from "@/shared/interfaces/https/transaction-category-response";
 import * as transactionService from "@/shared/services/dt-money/transaction.service";
 
 export type TransactionContextType = {
   categories: TransactionCategory[];
   fetchCategories: () => Promise<void>;
+  createTransaction: (transaction: CreateTransactionInterface) => Promise<void>;
 };
 
 export const TransactionContext = createContext({} as TransactionContextType);
@@ -26,8 +28,14 @@ export function TransactionContextProvider({
     setCategories(categoriesResponse);
   }
 
+  async function createTransaction(transaction: CreateTransactionInterface) {
+    await transactionService.createTransaction(transaction);
+  }
+
   return (
-    <TransactionContext.Provider value={{ categories, fetchCategories }}>
+    <TransactionContext.Provider
+      value={{ categories, fetchCategories, createTransaction }}
+    >
       {children}
     </TransactionContext.Provider>
   );
