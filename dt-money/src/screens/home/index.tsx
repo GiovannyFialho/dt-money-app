@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import { Text } from "react-native";
+import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useTransactionContext } from "@/context/transaction.context";
 
 import { useErrorHandler } from "@/hooks/useErrorHandler";
 
-import { AppHeader } from "@/components/app-header";
+import { ListHeader } from "@/screens/home/list-header";
 
 export function Home() {
   const { fetchCategories } = useTransactionContext();
@@ -25,10 +25,12 @@ export function Home() {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary">
-      <AppHeader />
-
-      <Text className="text-white">Home</Text>
+    <SafeAreaView className="flex-1 bg-background-secondary">
+      <FlatList
+        data={[]}
+        renderItem={() => <></>}
+        ListHeaderComponent={ListHeader}
+      />
     </SafeAreaView>
   );
 }
