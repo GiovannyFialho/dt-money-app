@@ -9,12 +9,13 @@ import { useErrorHandler } from "@/hooks/useErrorHandler";
 import { ListHeader } from "@/screens/home/list-header";
 
 export function Home() {
-  const { fetchCategories } = useTransactionContext();
+  const { fetchCategories, fetchTransactions } = useTransactionContext();
   const { handleError } = useErrorHandler();
 
   async function handleFetchCategories() {
     try {
       await fetchCategories();
+      await fetchTransactions();
     } catch (error) {
       handleError(error, "Erro ao carregar as categorias");
     }
