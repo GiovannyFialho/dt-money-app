@@ -14,8 +14,7 @@ export function Home() {
 
   async function handleFetchCategories() {
     try {
-      await fetchCategories();
-      await fetchTransactions();
+      await Promise.all([fetchCategories(), fetchTransactions()]);
     } catch (error) {
       handleError(error, "Erro ao carregar as categorias");
     }
@@ -26,8 +25,9 @@ export function Home() {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-background-secondary">
+    <SafeAreaView className="flex-1 bg-background-primary">
       <FlatList
+        className="bg-background-secondary"
         data={[]}
         renderItem={() => <></>}
         ListHeaderComponent={ListHeader}
