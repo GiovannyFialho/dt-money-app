@@ -1,12 +1,16 @@
 import { ScrollView, View } from "react-native";
 
-import { TransactionType } from "@/shared/enums/transaction-type";
+import { useTransactionContext } from "@/context/transaction.context";
 
-import { AppHeader } from "@/components/app-header";
+import { TransactionType } from "@/shared/enums/transaction-type";
 
 import { TransactionCard } from "@/screens/home/list-header/transaction-card";
 
+import { AppHeader } from "@/components/app-header";
+
 export function ListHeader() {
+  const { totalTransactions } = useTransactionContext();
+
   return (
     <>
       <AppHeader />
@@ -19,9 +23,17 @@ export function ListHeader() {
           showsHorizontalScrollIndicator={false}
           className="absolute h-[141] pl-6"
         >
-          <TransactionCard type={TransactionType.EXPENSE} amount={0} />
+          <TransactionCard
+            type={TransactionType.EXPENSE}
+            amount={totalTransactions.expense}
+          />
 
-          <TransactionCard type={TransactionType.REVENUE} amount={0} />
+          <TransactionCard
+            type={TransactionType.REVENUE}
+            amount={totalTransactions.revenue}
+          />
+
+          <TransactionCard type={"total"} amount={totalTransactions.total} />
         </ScrollView>
       </View>
     </>
