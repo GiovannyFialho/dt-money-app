@@ -15,6 +15,7 @@ import * as transactionService from "@/shared/services/dt-money/transaction.serv
 export type TransactionContextType = {
   categories: TransactionCategory[];
   totalTransactions: TotalTransactions;
+  transactions: Transaction[];
   fetchCategories: () => Promise<void>;
   createTransaction: (transaction: CreateTransactionInterface) => Promise<void>;
   fetchTransactions: () => Promise<void>;
@@ -65,6 +66,7 @@ export function TransactionContextProvider({
       value={{
         categories,
         totalTransactions,
+        transactions,
         fetchCategories,
         createTransaction,
         fetchTransactions,

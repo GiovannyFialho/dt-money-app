@@ -1,59 +1,31 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { Text, View } from "react-native";
 
-import { colors } from "@/shared/colors";
+import { useTransactionContext } from "@/context/transaction.context";
+
 import { TransactionType } from "@/shared/enums/transaction-type";
 
-type TransactionCardType = TransactionType | "total";
+import { CARD_DATA } from "@/screens/home/list-header/transaction-card/strategies/card-data-strategy";
+import { ICONS } from "@/screens/home/list-header/transaction-card/strategies/icon-strategy";
+
+export type TransactionCardType = TransactionType | "total";
 
 type TransactionCardProps = {
   type: TransactionCardType;
   amount: number;
 };
 
-type IconsData = {
-  name: keyof typeof MaterialIcons.glyphMap;
-  color: string;
-};
-
-type CardData = {
-  label: string;
-  bgColor: string;
-};
-
-const ICONS: Record<TransactionCardType, IconsData> = {
-  [TransactionType.REVENUE]: {
-    name: "arrow-circle-up",
-    color: colors["accent-brand-light"],
-  },
-  [TransactionType.EXPENSE]: {
-    name: "arrow-circle-down",
-    color: colors["accent-red"],
-  },
-  total: {
-    name: "attach-money",
-    color: colors.white,
-  },
-};
-
-const CARD_DATA: Record<TransactionCardType, CardData> = {
-  [TransactionType.EXPENSE]: {
-    label: "Saída",
-    bgColor: "background-tertiary",
-  },
-  [TransactionType.REVENUE]: {
-    label: "Entrada",
-    bgColor: "background-tertiary",
-  },
-  total: {
-    label: "Total",
-    bgColor: "accent-brand-background-primary",
-  },
-};
-
 export function TransactionCard({ type, amount }: TransactionCardProps) {
+  const { transactions } = useTransactionContext();
+
   const iconData = ICONS[type];
   const cardData = CARD_DATA[type];
+
+  const lastTransaction = transactions.find(
+    ({ type: transactionType }) => transactionType.id === type,
+  );
 
   return (
     <View
@@ -64,13 +36,27 @@ export function TransactionCard({ type, amount }: TransactionCardProps) {
         <MaterialIcons name={iconData.name} size={26} color={iconData.color} />
       </View>
 
-      <View>
+      <View className="flex-col gap-2">
         <Text className="text-2xl font-bold text-gray-400">
           {amount.toLocaleString("pt-BR", {
             style: "currency",
             currency: "BRL",
           })}
         </Text>
+
+        {type !== "total" && (
+          <Text className="text-gray-700">
+            {lastTransaction?.createdAt
+              ? format(
+                  lastTransaction?.createdAt,
+                  `'Última ${cardData.label.toLocaleLowerCase()} em' d 'de' MMMM`,
+                  {
+                    locale: ptBR,
+                  },
+                )
+              : "Nenhuma transação encontrada"}
+          </Text>
+        )}
       </View>
     </View>
   );
