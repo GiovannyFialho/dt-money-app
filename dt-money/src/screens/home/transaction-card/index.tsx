@@ -2,7 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import clsx from "clsx";
 import { format } from "date-fns";
 import { Text, View } from "react-native";
-import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import { Swipeable } from "react-native-gesture-handler";
 
 import { colors } from "@/shared/colors";
 import { TransactionType } from "@/shared/enums/transaction-type";
@@ -24,6 +24,18 @@ export function TransactionCard({ transaction }: TransactionCardProps) {
         marginBottom: 16,
         overflow: "visible",
       }}
+      renderRightActions={() => (
+        <View
+          style={{
+            backgroundColor: "red",
+            justifyContent: "center",
+            alignItems: "center",
+            width: 80,
+          }}
+        >
+          <Text style={{ color: "white" }}>Delete</Text>
+        </View>
+      )}
     >
       <View className="h-[140] rounded-[6] bg-background-tertiary p-6">
         <Text className="text-base text-white">{transaction.description}</Text>
