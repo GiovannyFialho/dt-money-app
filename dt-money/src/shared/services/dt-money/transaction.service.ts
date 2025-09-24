@@ -38,3 +38,7 @@ export async function getTransactions(
 
   return data;
 }
+
+export async function deleteTransaction(id: number) {
+  await dtMoneyApi.delete(`/transaction/${id}`);
+}
