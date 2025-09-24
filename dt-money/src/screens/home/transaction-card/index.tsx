@@ -23,6 +23,7 @@ export function TransactionCard({ transaction }: TransactionCardProps) {
         width: "90%",
         alignItems: "center",
         alignSelf: "center",
+        marginTop: 10,
         marginBottom: 16,
         overflow: "visible",
       }}
