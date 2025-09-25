@@ -17,6 +17,8 @@ export type TransactionContextType = {
   categories: TransactionCategory[];
   totalTransactions: TotalTransactions;
   transactions: Transaction[];
+  loading: boolean;
+  refreshTransactions: () => Promise<void>;
   fetchCategories: () => Promise<void>;
   createTransaction: (transaction: CreateTransactionInterface) => Promise<void>;
   updateTransaction: (transaction: UpdateTransactionInterface) => Promise<void>;
@@ -41,6 +43,20 @@ export function TransactionContextProvider({
       total: 0,
     },
   );
+  const [loading, setLoading] = useState(false);
+
+  async function refreshTransactions() {
+    setLoading(true);
+
+    const transactionsResponse = await transactionService.getTransactions({
+      page: 1,
+      perPage: 10,
+    });
+
+    setTransactions(transactionsResponse.data);
+    setTotalTransactions(transactionsResponse.totalTransactions);
+    setLoading(false);
+  }
 
   async function fetchCategories() {
     const categoriesResponse =
@@ -51,10 +67,12 @@ export function TransactionContextProvider({
 
   async function createTransaction(transaction: CreateTransactionInterface) {
     await transactionService.createTransaction(transaction);
+    await refreshTransactions();
   }
 
   async function updateTransaction(transaction: UpdateTransactionInterface) {
     await transactionService.updateTransaction(transaction);
+    await refreshTransactions();
   }
 
   const fetchTransactions = useCallback(async () => {
@@ -73,6 +91,8 @@ export function TransactionContextProvider({
         categories,
         totalTransactions,
         transactions,
+        loading,
+        refreshTransactions,
         fetchCategories,
         createTransaction,
         updateTransaction,

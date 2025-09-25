@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { FlatList } from "react-native";
+import { FlatList, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useTransactionContext } from "@/context/transaction.context";
@@ -10,8 +10,13 @@ import { ListHeader } from "@/screens/home/list-header";
 import { TransactionCard } from "@/screens/home/transaction-card";
 
 export function Home() {
-  const { transactions, fetchCategories, fetchTransactions } =
-    useTransactionContext();
+  const {
+    transactions,
+    loading,
+    refreshTransactions,
+    fetchCategories,
+    fetchTransactions,
+  } = useTransactionContext();
   const { handleError } = useErrorHandler();
 
   async function handleFetchCategories() {
@@ -34,6 +39,12 @@ export function Home() {
         keyExtractor={({ id }) => `transaction-${id}`}
         renderItem={({ item }) => <TransactionCard transaction={item} />}
         ListHeaderComponent={ListHeader}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={refreshTransactions}
+          />
+        }
       />
     </SafeAreaView>
   );
