@@ -21,7 +21,7 @@ export function LeftAction({ transaction }: LeftActionProps) {
         openBottomSheet(<EditTransactionForm transaction={transaction} />, 1);
       }}
     >
-      <View className="bg-accent-blue-background-primary h-[140] w-[80] items-center justify-center rounded-l-md">
+      <View className="h-[140] w-[80] items-center justify-center rounded-l-md bg-accent-blue-dark">
         <MaterialIcons name="edit" size={30} color={colors.white} />
       </View>
     </TouchableOpacity>
