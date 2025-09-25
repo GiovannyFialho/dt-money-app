@@ -8,6 +8,7 @@ import type {
   GetTransactionsResponse,
 } from "@/shared/interfaces/https/get-transaction-request";
 import type { TransactionCategory } from "@/shared/interfaces/https/transaction-category-response";
+import type { UpdateTransactionInterface } from "@/shared/interfaces/https/update-transaction-request";
 
 export async function getTransactionCategories(): Promise<
   TransactionCategory[]
@@ -41,4 +42,10 @@ export async function getTransactions(
 
 export async function deleteTransaction(id: number) {
   await dtMoneyApi.delete(`/transaction/${id}`);
+}
+
+export async function updateTransaction(
+  transaction: UpdateTransactionInterface,
+) {
+  await dtMoneyApi.put("/transaction", transaction);
 }
