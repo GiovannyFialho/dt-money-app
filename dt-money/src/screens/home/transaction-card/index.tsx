@@ -8,6 +8,7 @@ import { colors } from "@/shared/colors";
 import { TransactionType } from "@/shared/enums/transaction-type";
 import type { Transaction } from "@/shared/interfaces/transaction";
 
+import { LeftAction } from "@/screens/home/transaction-card/left-action";
 import { RightAction } from "@/screens/home/transaction-card/right-action";
 
 type TransactionCardProps = {
@@ -29,6 +30,8 @@ export function TransactionCard({ transaction }: TransactionCardProps) {
       }}
       renderRightActions={() => <RightAction transactionId={transaction.id} />}
       overshootRight={false}
+      renderLeftActions={() => <LeftAction transaction={transaction} />}
+      overshootLeft={false}
     >
       <View className="h-[140] rounded-[6] bg-background-tertiary p-6">
         <Text className="text-base text-white">{transaction.description}</Text>

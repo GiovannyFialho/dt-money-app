@@ -33,7 +33,7 @@ export function AppHeader() {
       <TouchableOpacity
         className="h-[50px] w-[130px] items-center justify-center rounded-xl bg-accent-brand"
         onPress={() => {
-          openBottomSheet(<NewTransaction />, 2);
+          openBottomSheet(<NewTransaction />, 1);
         }}
       >
         <Text className="text-sm font-bold text-white">Nova transação</Text>
