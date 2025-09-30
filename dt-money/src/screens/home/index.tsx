@@ -21,7 +21,7 @@ export function Home() {
 
   async function handleFetchCategories() {
     try {
-      await Promise.all([fetchCategories(), fetchTransactions()]);
+      await Promise.all([fetchCategories(), fetchTransactions({ page: 1 })]);
     } catch (error) {
       handleError(error, "Erro ao carregar as categorias");
     }

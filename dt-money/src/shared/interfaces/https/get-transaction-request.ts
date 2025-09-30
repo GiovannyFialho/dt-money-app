@@ -1,6 +1,12 @@
 import { TotalTransactions } from "@/shared/interfaces/https/total-transactions";
 import { Transaction } from "@/shared/interfaces/transaction";
 
+export interface Pagination {
+  page: number;
+  perPage: number;
+  totalRows?: number;
+}
+
 export interface GetTransactionsParams {
   page: number;
   perPage: number;

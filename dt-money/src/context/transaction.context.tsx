@@ -7,11 +7,16 @@ import {
 } from "react";
 
 import type { CreateTransactionInterface } from "@/shared/interfaces/https/create-transaction-request";
+import type { Pagination } from "@/shared/interfaces/https/get-transaction-request";
 import type { TotalTransactions } from "@/shared/interfaces/https/total-transactions";
 import type { TransactionCategory } from "@/shared/interfaces/https/transaction-category-response";
 import type { UpdateTransactionInterface } from "@/shared/interfaces/https/update-transaction-request";
 import type { Transaction } from "@/shared/interfaces/transaction";
 import * as transactionService from "@/shared/services/dt-money/transaction.service";
+
+type FetchTransactionParams = {
+  page: number;
+};
 
 export type TransactionContextType = {
   categories: TransactionCategory[];
@@ -22,7 +27,7 @@ export type TransactionContextType = {
   fetchCategories: () => Promise<void>;
   createTransaction: (transaction: CreateTransactionInterface) => Promise<void>;
   updateTransaction: (transaction: UpdateTransactionInterface) => Promise<void>;
-  fetchTransactions: () => Promise<void>;
+  fetchTransactions: (params: FetchTransactionParams) => Promise<void>;
 };
 
 export const TransactionContext = createContext({} as TransactionContextType);
@@ -43,6 +48,11 @@ export function TransactionContextProvider({
       total: 0,
     },
   );
+  const [pagination, setPagination] = useState<Pagination>({
+    page: 1,
+    perPage: 15,
+    totalRows: 0,
+  });
   const [loading, setLoading] = useState(false);
 
   async function refreshTransactions() {
@@ -75,15 +85,31 @@ export function TransactionContextProvider({
     await refreshTransactions();
   }
 
-  const fetchTransactions = useCallback(async () => {
-    const transactionsResponse = await transactionService.getTransactions({
-      page: 1,
-      perPage: 10,
-    });
+  const fetchTransactions = useCallback(
+    async ({ page = 1 }: FetchTransactionParams) => {
+      setLoading(true);
 
-    setTransactions(transactionsResponse.data);
-    setTotalTransactions(transactionsResponse.totalTransactions);
-  }, []);
+      const transactionsResponse = await transactionService.getTransactions({
+        page,
+        perPage: pagination.perPage,
+      });
+
+      if (page === 1) {
+        setTransactions(transactionsResponse.data);
+      } else {
+        setTransactions((prev) => [...prev, ...transactionsResponse.data]);
+      }
+
+      setTotalTransactions(transactionsResponse.totalTransactions);
+      setPagination({
+        ...pagination,
+        page,
+        totalRows: transactionsResponse.totalRows,
+      });
+      setLoading(false);
+    },
+    [pagination],
+  );
 
   return (
     <TransactionContext.Provider
