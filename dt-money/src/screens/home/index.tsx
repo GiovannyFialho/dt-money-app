@@ -22,14 +22,43 @@ export function Home() {
 
   async function handleFetchCategories() {
     try {
-      await Promise.all([fetchCategories(), fetchTransactions({ page: 1 })]);
+      await fetchCategories();
     } catch (error) {
-      handleError(error, "Erro ao carregar as categorias");
+      handleError(error);
+    }
+  }
+
+  async function handleFetchInitialTransactions() {
+    try {
+      await fetchTransactions({ page: 1 });
+    } catch (error) {
+      handleError(error, "Falha ao buscar transações");
+    }
+  }
+
+  async function handleLoadMoreTransactions() {
+    try {
+      await loadMoreTransactions();
+    } catch (error) {
+      handleError(error, "Falha ao carregar novas transações");
+    }
+  }
+
+  async function handleRefreshTransactions() {
+    try {
+      await refreshTransactions();
+    } catch (error) {
+      handleError(error, "Falha ao recarregar as transações");
     }
   }
 
   useEffect(() => {
-    (async () => await handleFetchCategories())();
+    (async () => {
+      await Promise.all([
+        handleFetchCategories(),
+        handleFetchInitialTransactions(),
+      ]);
+    })();
   }, []);
 
   return (
@@ -40,12 +69,12 @@ export function Home() {
         keyExtractor={({ id }) => `transaction-${id}`}
         renderItem={({ item }) => <TransactionCard transaction={item} />}
         ListHeaderComponent={ListHeader}
-        onEndReached={loadMoreTransactions}
+        onEndReached={handleLoadMoreTransactions}
         onEndReachedThreshold={0.5}
         refreshControl={
           <RefreshControl
             refreshing={loading}
-            onRefresh={refreshTransactions}
+            onRefresh={handleRefreshTransactions}
           />
         }
       />

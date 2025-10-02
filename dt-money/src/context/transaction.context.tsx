@@ -57,7 +57,7 @@ export function TransactionContextProvider({
   });
   const [loading, setLoading] = useState(false);
 
-  async function refreshTransactions() {
+  const refreshTransactions = useCallback(async () => {
     const { page, perPage } = pagination;
 
     setLoading(true);
@@ -77,7 +77,7 @@ export function TransactionContextProvider({
     });
 
     setLoading(false);
-  }
+  }, [pagination]);
 
   async function fetchCategories() {
     const categoriesResponse =
