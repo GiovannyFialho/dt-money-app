@@ -28,6 +28,7 @@ export type TransactionContextType = {
   createTransaction: (transaction: CreateTransactionInterface) => Promise<void>;
   updateTransaction: (transaction: UpdateTransactionInterface) => Promise<void>;
   fetchTransactions: (params: FetchTransactionParams) => Promise<void>;
+  loadMoreTransactions: () => Promise<void>;
 };
 
 export const TransactionContext = createContext({} as TransactionContextType);
@@ -52,6 +53,7 @@ export function TransactionContextProvider({
     page: 1,
     perPage: 15,
     totalRows: 0,
+    totalPage: 0,
   });
   const [loading, setLoading] = useState(false);
 
@@ -111,6 +113,12 @@ export function TransactionContextProvider({
     [pagination],
   );
 
+  const loadMoreTransactions = useCallback(async () => {
+    if (loading || pagination.page >= pagination.totalPage) return;
+
+    fetchTransactions({ page: pagination.page + 1 });
+  }, [loading, pagination]);
+
   return (
     <TransactionContext.Provider
       value={{
@@ -123,6 +131,7 @@ export function TransactionContextProvider({
         createTransaction,
         updateTransaction,
         fetchTransactions,
+        loadMoreTransactions,
       }}
     >
       {children}
