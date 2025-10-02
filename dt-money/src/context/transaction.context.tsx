@@ -51,22 +51,31 @@ export function TransactionContextProvider({
   );
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
-    perPage: 15,
+    perPage: 3,
     totalRows: 0,
-    totalPage: 0,
+    totalPages: 0,
   });
   const [loading, setLoading] = useState(false);
 
   async function refreshTransactions() {
+    const { page, perPage } = pagination;
+
     setLoading(true);
 
     const transactionsResponse = await transactionService.getTransactions({
       page: 1,
-      perPage: 10,
+      perPage: page * perPage,
     });
 
     setTransactions(transactionsResponse.data);
     setTotalTransactions(transactionsResponse.totalTransactions);
+    setPagination({
+      ...pagination,
+      page,
+      totalPages: transactionsResponse.totalPages,
+      totalRows: transactionsResponse.totalRows,
+    });
+
     setLoading(false);
   }
 
@@ -114,7 +123,7 @@ export function TransactionContextProvider({
   );
 
   const loadMoreTransactions = useCallback(async () => {
-    if (loading || pagination.page >= pagination.totalPage) return;
+    if (loading || pagination.page >= pagination.totalPages) return;
 
     fetchTransactions({ page: pagination.page + 1 });
   }, [loading, pagination]);

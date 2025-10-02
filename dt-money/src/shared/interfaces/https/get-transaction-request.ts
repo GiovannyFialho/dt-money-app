@@ -5,7 +5,7 @@ export interface Pagination {
   page: number;
   perPage: number;
   totalRows?: number;
-  totalPage: number;
+  totalPages: number;
 }
 
 export interface GetTransactionsParams {
