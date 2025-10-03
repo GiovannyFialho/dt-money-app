@@ -60,7 +60,7 @@ export function TransactionContextProvider({
   );
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
-    perPage: 3,
+    perPage: 15,
     totalRows: 0,
     totalPages: 0,
   });
