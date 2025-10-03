@@ -6,6 +6,7 @@ import { useTransactionContext } from "@/context/transaction.context";
 
 import { useErrorHandler } from "@/hooks/useErrorHandler";
 
+import { EmptyList } from "@/screens/home/empty-list";
 import { ListHeader } from "@/screens/home/list-header";
 import { TransactionCard } from "@/screens/home/transaction-card";
 
@@ -88,6 +89,7 @@ export function Home() {
         ListHeaderComponent={ListHeader}
         onEndReached={handleLoadMoreTransactions}
         onEndReachedThreshold={0.5}
+        ListEmptyComponent={loadings.initial ? null : EmptyList}
         refreshControl={
           <RefreshControl
             refreshing={loadings.refresh}
