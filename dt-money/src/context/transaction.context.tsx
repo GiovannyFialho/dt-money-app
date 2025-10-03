@@ -18,11 +18,20 @@ type FetchTransactionParams = {
   page: number;
 };
 
+type Loadings = {
+  initial: boolean;
+  refresh: boolean;
+  loadMore: boolean;
+};
+
+type HandleLoadingParams = { key: keyof Loadings; value: boolean };
+
 export type TransactionContextType = {
   categories: TransactionCategory[];
   totalTransactions: TotalTransactions;
   transactions: Transaction[];
-  loading: boolean;
+  loadings: Loadings;
+  handleLoadings: (params: HandleLoadingParams) => void;
   refreshTransactions: () => Promise<void>;
   fetchCategories: () => Promise<void>;
   createTransaction: (transaction: CreateTransactionInterface) => Promise<void>;
@@ -55,12 +64,18 @@ export function TransactionContextProvider({
     totalRows: 0,
     totalPages: 0,
   });
-  const [loading, setLoading] = useState(false);
+  const [loadings, setLoadings] = useState<Loadings>({
+    initial: false,
+    loadMore: false,
+    refresh: false,
+  });
+
+  function handleLoadings({ key, value }: HandleLoadingParams) {
+    return setLoadings((prev) => ({ ...prev, [key]: value }));
+  }
 
   const refreshTransactions = useCallback(async () => {
     const { page, perPage } = pagination;
-
-    setLoading(true);
 
     const transactionsResponse = await transactionService.getTransactions({
       page: 1,
@@ -75,8 +90,6 @@ export function TransactionContextProvider({
       totalPages: transactionsResponse.totalPages,
       totalRows: transactionsResponse.totalRows,
     });
-
-    setLoading(false);
   }, [pagination]);
 
   async function fetchCategories() {
@@ -98,8 +111,6 @@ export function TransactionContextProvider({
 
   const fetchTransactions = useCallback(
     async ({ page = 1 }: FetchTransactionParams) => {
-      setLoading(true);
-
       const transactionsResponse = await transactionService.getTransactions({
         page,
         perPage: pagination.perPage,
@@ -117,16 +128,15 @@ export function TransactionContextProvider({
         page,
         totalRows: transactionsResponse.totalRows,
       });
-      setLoading(false);
     },
     [pagination],
   );
 
   const loadMoreTransactions = useCallback(async () => {
-    if (loading || pagination.page >= pagination.totalPages) return;
+    if (loadings.loadMore || pagination.page >= pagination.totalPages) return;
 
     fetchTransactions({ page: pagination.page + 1 });
-  }, [loading, pagination]);
+  }, [loadings.loadMore, pagination]);
 
   return (
     <TransactionContext.Provider
@@ -134,7 +144,8 @@ export function TransactionContextProvider({
         categories,
         totalTransactions,
         transactions,
-        loading,
+        loadings,
+        handleLoadings,
         refreshTransactions,
         fetchCategories,
         createTransaction,
