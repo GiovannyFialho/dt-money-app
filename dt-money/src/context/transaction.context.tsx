@@ -27,6 +27,7 @@ type Loadings = {
 type HandleLoadingParams = { key: keyof Loadings; value: boolean };
 
 export type TransactionContextType = {
+  pagination: Pagination;
   categories: TransactionCategory[];
   totalTransactions: TotalTransactions;
   transactions: Transaction[];
@@ -141,6 +142,7 @@ export function TransactionContextProvider({
   return (
     <TransactionContext.Provider
       value={{
+        pagination,
         categories,
         totalTransactions,
         transactions,

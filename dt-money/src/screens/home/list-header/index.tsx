@@ -4,6 +4,7 @@ import { useTransactionContext } from "@/context/transaction.context";
 
 import { TransactionType } from "@/shared/enums/transaction-type";
 
+import { FilterInput } from "@/screens/home/list-header/filter-input";
 import { TransactionCard } from "@/screens/home/list-header/transaction-card";
 
 import { AppHeader } from "@/components/app-header";
@@ -15,7 +16,7 @@ export function ListHeader() {
     <>
       <AppHeader />
 
-      <View className="h-[150] w-full">
+      <View className="mb-3 h-[150] w-full">
         <View className="h-[50] bg-background-primary" />
 
         <ScrollView
@@ -36,6 +37,8 @@ export function ListHeader() {
           <TransactionCard type={"total"} amount={totalTransactions.total} />
         </ScrollView>
       </View>
+
+      <FilterInput />
     </>
   );
 }
