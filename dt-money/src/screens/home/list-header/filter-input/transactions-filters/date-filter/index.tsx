@@ -1,10 +1,15 @@
 import clsx from "clsx";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import DateTimePicker from "react-native-modal-datetime-picker";
 
+import { useTransactionContext } from "@/context/transaction.context";
+import { ptBR } from "date-fns/locale";
+
 export function DateFilter() {
+  const { filters, handleFilters } = useTransactionContext();
+
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
@@ -14,6 +19,7 @@ export function DateFilter() {
 
   function onStartConfirm(selectedDate: Date) {
     setShowStartDatePicker(false);
+    handleFilters({ key: "from", value: selectedDate });
   }
 
   function onEndCancel() {
@@ -22,11 +28,22 @@ export function DateFilter() {
 
   function onEndConfirm(selectedDate: Date) {
     setShowEndDatePicker(false);
+    handleFilters({ key: "to", value: selectedDate });
+  }
+
+  function formatDate(date?: Date) {
+    if (!date || !isValid) {
+      return undefined;
+    }
+
+    return format(date, "dd/MM/yyyy", {
+      locale: ptBR,
+    });
   }
 
   return (
     <>
-      <Text className="text-lg text-gray-700">Data</Text>
+      <Text className="mb-6 text-lg text-gray-700">Data</Text>
 
       <View className="mb-6 flex-row justify-between">
         <View className="w-[48%]">
@@ -34,8 +51,13 @@ export function DateFilter() {
             className="rounded-md border-b border-gray-800 p-2"
             onPress={() => setShowStartDatePicker(true)}
           >
-            <Text className={clsx("text-lg text-gray-700")}>
-              {format(new Date(), "dd/MM/yyyy")}
+            <Text
+              className={clsx(
+                "text-lg",
+                filters.from ? "text-white" : "text-gray-700",
+              )}
+            >
+              {formatDate(filters.from) || "De"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -45,8 +67,13 @@ export function DateFilter() {
             className="rounded-md border-b border-gray-800 p-2"
             onPress={() => setShowEndDatePicker(true)}
           >
-            <Text className={clsx("text-lg text-gray-700")}>
-              {format(new Date(), "dd/MM/yyyy")}
+            <Text
+              className={clsx(
+                "text-lg",
+                filters.to ? "text-white" : "text-gray-700",
+              )}
+            >
+              {formatDate(filters.to) || "Até"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -54,7 +81,7 @@ export function DateFilter() {
 
       <DateTimePicker
         isVisible={showStartDatePicker}
-        date={new Date()}
+        date={filters.from}
         onCancel={onStartCancel}
         onConfirm={onStartConfirm}
         mode="date"
@@ -65,7 +92,7 @@ export function DateFilter() {
 
       <DateTimePicker
         isVisible={showEndDatePicker}
-        date={new Date()}
+        date={filters.to}
         onCancel={onEndCancel}
         onConfirm={onEndConfirm}
         mode="date"

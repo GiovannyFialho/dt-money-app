@@ -7,7 +7,10 @@ import {
 } from "react";
 
 import type { CreateTransactionInterface } from "@/shared/interfaces/https/create-transaction-request";
-import type { Pagination } from "@/shared/interfaces/https/get-transaction-request";
+import type {
+  Filters,
+  Pagination,
+} from "@/shared/interfaces/https/get-transaction-request";
 import type { TotalTransactions } from "@/shared/interfaces/https/total-transactions";
 import type { TransactionCategory } from "@/shared/interfaces/https/transaction-category-response";
 import type { UpdateTransactionInterface } from "@/shared/interfaces/https/update-transaction-request";
@@ -26,12 +29,18 @@ type Loadings = {
 
 type HandleLoadingParams = { key: keyof Loadings; value: boolean };
 
+type HandleFiltersParams = {
+  key: keyof Filters;
+  value: Date | boolean | number;
+};
+
 export type TransactionContextType = {
   pagination: Pagination;
   categories: TransactionCategory[];
   totalTransactions: TotalTransactions;
   transactions: Transaction[];
   loadings: Loadings;
+  filters: Filters;
   searchText: string;
   setSearchText: (text: string) => void;
   handleLoadings: (params: HandleLoadingParams) => void;
@@ -41,6 +50,7 @@ export type TransactionContextType = {
   updateTransaction: (transaction: UpdateTransactionInterface) => Promise<void>;
   fetchTransactions: (params: FetchTransactionParams) => Promise<void>;
   loadMoreTransactions: () => Promise<void>;
+  handleFilters: (params: HandleFiltersParams) => void;
 };
 
 export const TransactionContext = createContext({} as TransactionContextType);
@@ -55,6 +65,12 @@ export function TransactionContextProvider({
   const [categories, setCategories] = useState<TransactionCategory[]>([]);
   const [searchText, setSearchText] = useState<string>("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [filters, setFilters] = useState<Filters>({
+    from: undefined,
+    to: undefined,
+    typeId: undefined,
+    categoryIds: {},
+  });
   const [totalTransactions, setTotalTransactions] = useState<TotalTransactions>(
     {
       expense: 0,
@@ -113,6 +129,10 @@ export function TransactionContextProvider({
     await refreshTransactions();
   }
 
+  function handleFilters({ key, value }: HandleFiltersParams) {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  }
+
   const fetchTransactions = useCallback(
     async ({ page = 1 }: FetchTransactionParams) => {
       const transactionsResponse = await transactionService.getTransactions({
@@ -151,6 +171,7 @@ export function TransactionContextProvider({
         totalTransactions,
         transactions,
         loadings,
+        filters,
         searchText,
         setSearchText,
         handleLoadings,
@@ -160,6 +181,7 @@ export function TransactionContextProvider({
         updateTransaction,
         fetchTransactions,
         loadMoreTransactions,
+        handleFilters,
       }}
     >
       {children}
