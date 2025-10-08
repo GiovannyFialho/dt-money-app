@@ -5,6 +5,7 @@ import { useBottomSheetContext } from "@/context/bottom-sheet.context";
 
 import { colors } from "@/shared/colors";
 
+import { CategoryFilter } from "@/screens/home/list-header/filter-input/transactions-filters/category-filter";
 import { DateFilter } from "@/screens/home/list-header/filter-input/transactions-filters/date-filter";
 
 export function TransactionsFilters() {
@@ -23,6 +24,8 @@ export function TransactionsFilters() {
       </View>
 
       <DateFilter />
+
+      <CategoryFilter />
     </View>
   );
 }

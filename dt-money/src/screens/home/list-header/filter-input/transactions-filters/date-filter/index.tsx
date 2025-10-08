@@ -43,7 +43,7 @@ export function DateFilter() {
 
   return (
     <>
-      <Text className="mb-6 text-lg text-gray-700">Data</Text>
+      <Text className="mb-5 text-base font-medium text-gray-600">Data</Text>
 
       <View className="mb-6 flex-row justify-between">
         <View className="w-[48%]">

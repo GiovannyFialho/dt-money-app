@@ -51,6 +51,7 @@ export type TransactionContextType = {
   fetchTransactions: (params: FetchTransactionParams) => Promise<void>;
   loadMoreTransactions: () => Promise<void>;
   handleFilters: (params: HandleFiltersParams) => void;
+  handleCategoryFilter: (categoryId: number) => void;
 };
 
 export const TransactionContext = createContext({} as TransactionContextType);
@@ -133,6 +134,16 @@ export function TransactionContextProvider({
     setFilters((prev) => ({ ...prev, [key]: value }));
   }
 
+  function handleCategoryFilter(categoryId: number) {
+    setFilters((prev) => ({
+      ...prev,
+      categoryIds: {
+        ...prev.categoryIds,
+        [categoryId]: !Boolean(prev.categoryIds[categoryId]),
+      },
+    }));
+  }
+
   const fetchTransactions = useCallback(
     async ({ page = 1 }: FetchTransactionParams) => {
       const transactionsResponse = await transactionService.getTransactions({
@@ -182,6 +193,7 @@ export function TransactionContextProvider({
         fetchTransactions,
         loadMoreTransactions,
         handleFilters,
+        handleCategoryFilter,
       }}
     >
       {children}
