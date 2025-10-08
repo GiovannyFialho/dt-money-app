@@ -7,6 +7,7 @@ import { colors } from "@/shared/colors";
 
 import { CategoryFilter } from "@/screens/home/list-header/filter-input/transactions-filters/category-filter";
 import { DateFilter } from "@/screens/home/list-header/filter-input/transactions-filters/date-filter";
+import { TypeFilter } from "@/screens/home/list-header/filter-input/transactions-filters/type-filter";
 
 export function TransactionsFilters() {
   const { closeBottomSheet } = useBottomSheetContext();
@@ -26,6 +27,8 @@ export function TransactionsFilters() {
       <DateFilter />
 
       <CategoryFilter />
+
+      <TypeFilter />
     </View>
   );
 }
