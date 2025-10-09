@@ -18,7 +18,7 @@ export function LeftAction({ transaction }: LeftActionProps) {
   return (
     <TouchableOpacity
       onPress={() => {
-        openBottomSheet(<EditTransactionForm transaction={transaction} />, 1);
+        openBottomSheet(<EditTransactionForm transaction={transaction} />, 0);
       }}
     >
       <View className="h-[140] w-[80] items-center justify-center rounded-l-md bg-accent-blue-dark">
