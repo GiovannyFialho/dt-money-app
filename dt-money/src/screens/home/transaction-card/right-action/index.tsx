@@ -2,12 +2,14 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native";
 
+import { useSnackbarContext } from "@/context/snackbar.context";
+
 import { colors } from "@/shared/colors";
 import * as transactionService from "@/shared/services/dt-money/transaction.service";
 
+import { useErrorHandler } from "@/hooks/useErrorHandler";
+
 import { DeleteModal } from "@/screens/home/transaction-card/right-action/delete-modal";
-import { useSnackbarContext } from "../../../../context/snackbar.context";
-import { useErrorHandler } from "../../../../hooks/useErrorHandler";
 
 type RightActionProps = {
   transactionId: number;
